@@ -2,7 +2,9 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"log"
+	"time"
 
 	vault "github.com/hashicorp/vault/api"
 	"github.com/ragul28/hc-vault-client-basic/pkg/utils"
@@ -46,4 +48,43 @@ func main() {
 	}
 
 	log.Printf("Super secret password [%s] was retrieved.\n", value)
+}
+
+func vaultGetSecretVersions(ctx context.Context, client *vault.Client, secretPath, secretKey string) {
+	versions, err := client.KVv2("secret").GetVersionsAsList(ctx, secretPath)
+	if err != nil {
+		log.Fatalf(
+			"Unable to retrieve all versions of the super secret password from the vault. Reason: %v",
+			err,
+		)
+	}
+
+	fmt.Printf("Version\t Created at\t\t\t Deleted at\t Destroyed\t Value\n")
+
+	for _, version := range versions {
+		deleted := "Not deleted"
+		if !version.DeletionTime.IsZero() {
+			deleted = version.DeletionTime.Format(time.UnixDate)
+		}
+
+		secret, err := client.KVv2("secret").GetVersion(ctx, secretPath, version.Version)
+		if err != nil {
+			log.Fatalf(
+				"Unable to retrieve version %d of the super secret password from the vault. Reason: %v",
+				version.Version,
+				err,
+			)
+		}
+		value, ok := secret.Data[secretKey].(string)
+
+		if ok {
+			fmt.Printf("%d\t %s\t %s\t %t\t\t %s\n",
+				version.Version,
+				version.CreatedTime.Format(time.UnixDate),
+				deleted,
+				version.Destroyed,
+				value,
+			)
+		}
+	}
 }
