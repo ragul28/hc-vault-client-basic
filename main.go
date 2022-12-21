@@ -33,4 +33,17 @@ func main() {
 	}
 
 	log.Println("Secret written successfully.")
+
+	// Read a secret
+	secret, err := client.KVv2("secret").Get(ctx, "my-secret-password")
+	if err != nil {
+		log.Fatalf("unable to read secret: %v", err)
+	}
+
+	value, ok := secret.Data["password"].(string)
+	if !ok {
+		log.Fatalf("vaule type assetion failed: %T %#v", secret.Data["password"], secret.Data["password"])
+	}
+
+	log.Printf("Super secret password [%s] was retrieved.\n", value)
 }
