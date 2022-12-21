@@ -1,0 +1,14 @@
+version: '3.9'
+services:
+
+  vault:
+    image: vault:1.12.2
+    container_name: vault
+    ports: 
+      - 8200:8200
+    environment:
+    - VAULT_DEV_ROOT_TOKEN_ID=DEV_SECRET
+    cap_add:
+    - IPC_LOCK
+    # volumes:
+    #   - ./.data/vault:/vault/file
