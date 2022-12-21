@@ -93,6 +93,9 @@ func vaultGetSecretVersions(ctx context.Context, client *vault.Client, secretPat
 }
 
 func vaultDeleteSecret(ctx context.Context, client *vault.Client, secretPath string) {
+	// Delete: Deletes latest version
+	// DeleteMetadata: Deletes all version & path
+	// DeleteVersion: Deletes specfied versions of secret
 	err := client.KVv2("secret").Delete(ctx, secretPath)
 	if err != nil {
 		log.Fatalf("Unable to delete the latest version of the secret: %v", err)
