@@ -7,7 +7,7 @@ services:
     ports: 
       - 8200:8200
     environment:
-    - VAULT_DEV_ROOT_TOKEN_ID=DEV_SECRET
+    - VAULT_DEV_ROOT_TOKEN_ID=DEV_TOKEN
     cap_add:
     - IPC_LOCK
     # volumes:
