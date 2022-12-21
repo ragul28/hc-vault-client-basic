@@ -22,6 +22,7 @@ func main() {
 
 	client.SetToken(utils.GetEnv("VAULT_TOKEN", "DEV_TOKEN"))
 
+	secretPath := "my-secret-password"
 	secretData := map[string]interface{}{
 		"password": "TopSecret",
 	}
@@ -29,20 +30,20 @@ func main() {
 	ctx := context.Background()
 
 	// Write a secret
-	vaultWriteSecret(ctx, client, "my-secret-password", secretData)
+	vaultWriteSecret(ctx, client, secretPath, secretData)
 
 	// Read a secret
-	vaultReadSecret(ctx, client, "my-secret-password", "password")
+	vaultReadSecret(ctx, client, secretPath, "password")
 
 	// Get secret versions
-	vaultGetSecretVersions(ctx, client, "my-secret-password", "password")
+	vaultGetSecretVersions(ctx, client, secretPath, "password")
 
 	// Delete Secret
-	vaultDeleteSecret(ctx, client, "my-secret-password")
+	vaultDeleteSecret(ctx, client, secretPath)
 }
 
 func vaultWriteSecret(ctx context.Context, client *vault.Client, secretPath string, secretData map[string]interface{}) {
-	_, err := client.KVv2("secret").Put(ctx, "my-secret-password", secretData)
+	_, err := client.KVv2("secret").Put(ctx, secretPath, secretData)
 	if err != nil {
 		log.Fatalf("unable to write secret: %v", err)
 	}
@@ -51,7 +52,7 @@ func vaultWriteSecret(ctx context.Context, client *vault.Client, secretPath stri
 }
 
 func vaultReadSecret(ctx context.Context, client *vault.Client, secretPath string, secretKey string) {
-	secret, err := client.KVv2("secret").Get(ctx, "my-secret-password")
+	secret, err := client.KVv2("secret").Get(ctx, secretPath)
 	if err != nil {
 		log.Fatalf("unable to read secret: %v", err)
 	}
