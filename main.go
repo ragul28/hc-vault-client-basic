@@ -48,6 +48,9 @@ func main() {
 	}
 
 	log.Printf("Super secret password [%s] was retrieved.\n", value)
+
+	// Get secret versions
+	vaultGetSecretVersions(ctx, client, "my-secret-password", "password")
 }
 
 func vaultGetSecretVersions(ctx context.Context, client *vault.Client, secretPath, secretKey string) {
