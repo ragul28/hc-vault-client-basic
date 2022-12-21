@@ -51,6 +51,9 @@ func main() {
 
 	// Get secret versions
 	vaultGetSecretVersions(ctx, client, "my-secret-password", "password")
+
+	// Delete Secret
+	vaultDeleteSecret(ctx, client, "my-secret-password")
 }
 
 func vaultGetSecretVersions(ctx context.Context, client *vault.Client, secretPath, secretKey string) {
