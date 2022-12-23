@@ -5,21 +5,23 @@ import (
 	"log"
 
 	vault "github.com/hashicorp/vault/api"
-	"github.com/ragul28/hc-vault-client-basic/pkg/utils"
+	"github.com/ragul28/hc-vault-client-basic/internal/config"
 	"github.com/ragul28/hc-vault-client-basic/pkg/vaultSecret"
 )
 
 func main() {
 
+	env := config.GetEnvVar()
+
 	config := vault.DefaultConfig()
-	config.Address = utils.GetEnv("VAULT_ADDR", "http://localhost:8200")
+	config.Address = env.VaultAddr
 
 	client, err := vault.NewClient(config)
 	if err != nil {
 		log.Fatalf("Unable to initialize a Vault client: %v", err)
 	}
 
-	client.SetToken(utils.GetEnv("VAULT_TOKEN", "DEV_TOKEN"))
+	client.SetToken(env.VaultToken)
 
 	secretPath := "my-secret-password"
 	secretData := map[string]interface{}{
